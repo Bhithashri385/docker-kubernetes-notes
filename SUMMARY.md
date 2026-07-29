@@ -2,4 +2,5 @@
 
 ## docker-kubernetes-notes
 
-* [Chapter 1 - Docker & Kubernetes Fundamentals](README.md)
+* [Docker & Kubernetes Handbook](README.md)
+* [Chapter 1 - Docker & Kubernetes Fundamentals](docker-kubernetes-notes/chapter-1-docker-and-kubernetes-fundamentals.md)
