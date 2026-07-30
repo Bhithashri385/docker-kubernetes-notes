@@ -230,6 +230,8 @@ This feature is called **Rootless Containers**.
 
 This means an image built using Docker usually works with Podman as well.
 
+<figure><img src="../.gitbook/assets/ChatGPT Image Jul 30, 2026, 10_15_41 AM.png" alt=""><figcaption></figcaption></figure>
+
 ***
 
 ## What is a Containerfile?
