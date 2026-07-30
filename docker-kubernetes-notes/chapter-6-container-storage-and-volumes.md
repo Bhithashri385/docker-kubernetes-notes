@@ -1,16 +1,18 @@
 # Chapter 6: Container Storage & Volumes
 
-### Goal
+### &#x20;Goal
 
-Understand how Containers store data and why Volumes are required.
+Understand how Containers store data, why data is lost when a Container is removed, and how **Volumes** and **Bind Mounts** help store data permanently.
 
 #### By the end of this chapter, you will understand:
 
-* Where Container data is stored
 * What is a Writable Layer?
-* Why Container data is temporary
+* Where does Container data get stored?
+* Why is Container data temporary?
 * What are Volumes?
-* Why do we need Volumes?
+* What are Bind Mounts?
+* What is Persistent Data?
+* Difference between Volumes and Bind Mounts
 
 ***
 
@@ -32,7 +34,7 @@ report.txt
 
 Everything works perfectly.
 
-But later you remove the Container.
+Later, you remove the Container.
 
 ```bash
 podman rm notes-app
@@ -40,27 +42,25 @@ podman rm notes-app
 
 Now the question is...
 
-> **What happens to report.txt?**
+> **What happens to `report.txt`?**
 
-The answer is: It is deleted.
+The answer is: **It is deleted.**
 
-Why?
-
-Let's understand.
+Let's understand why.
 
 ***
 
 ## Overview
 
-<figure><img src="../.gitbook/assets/ChatGPT Image Jul 30, 2026, 02_34_00 PM (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
 
 ***
 
-## Step 1: Images are Read-Only
+## Step 1: Images are Read-only
 
 Remember,
 
-An Image is only a blueprint.
+An **Image** is only a blueprint.
 
 ```
 Container Image
@@ -72,23 +72,29 @@ Libraries
 
 Images cannot be modified.
 
+Whenever a Container starts, Podman creates a new layer above the Image.
+
 ***
 
-## Step 2: Podman Creates a Writable Layer
+## Step 2: Writable Layer
 
 When a Container starts,
 
-Podman adds a small **Writable Layer** above the Image.
+Podman creates a **Writable Layer**.
 
 ```
-Writable Layer
-────────────────────
-Image Layers
-────────────────────
-Base Image
+┌──────────────────────┐
+│   Writable Layer     │
+├──────────────────────┤
+│    Image Layers      │
+├──────────────────────┤
+│     Base Image       │
+└──────────────────────┘
 ```
 
-This Writable Layer stores:
+All new data is stored here.
+
+Examples:
 
 * New files
 * Updated files
@@ -97,7 +103,7 @@ This Writable Layer stores:
 
 ***
 
-## Step 3: Where Does Data Go?
+## Step 3: Where is Container Data Stored?
 
 Suppose your application creates:
 
@@ -115,7 +121,7 @@ logs.txt
 config.json
 ```
 
-The original Image never changes.
+The original Image remains unchanged.
 
 ***
 
@@ -127,57 +133,58 @@ Execute:
 podman rm notes-app
 ```
 
-The Writable Layer is deleted.
+Podman deletes the Container.
+
+Since the Writable Layer belongs to that Container,
+
+it is also deleted.
 
 ```
 Container Deleted
-
 ↓
-
 Writable Layer Deleted
-
 ↓
-
-All Changes Lost
+All Changes Lost ❌
 ```
 
-Everything stored inside that layer disappears.
+Everything stored inside the Writable Layer disappears.
 
 ***
 
-## Step 5: The Problem
+## Step 5: The Need for Persistent Storage
 
-Imagine you have:
+Imagine running:
 
-* MySQL Database
+* MySQL
 * PostgreSQL
+* MongoDB
 * User Uploads
-* Application Logs
 
-If all data disappears every time a Container is removed,
+If all data disappears whenever the Container is removed,
 
-your application becomes useless.
+the application becomes useless.
 
-We need a permanent storage solution.
+We need **Persistent Storage**.
 
 ***
 
-## Step 6: Introducing Volumes
+## Step 6: Volumes
 
-A **Volume** is a storage location outside the Container.
+A **Volume** is a storage location managed by Podman.
 
-Instead of storing files inside the Writable Layer,
+Instead of storing data inside the Writable Layer,
 
-the Container stores them inside the Volume.
+the Container stores data inside the Volume.
 
-<pre><code>  Container
+```
+Container
       │
       ▼
-<strong>   Volume
-</strong>      │
+Volume
+      │
       ▼
-  Hard Disk
-</code></pre>
+Hard Disk
+```
 
 Even if the Container is removed,
 
@@ -185,98 +192,188 @@ the Volume still exists.
 
 ***
 
-## Step 7: Why Volumes are Important
+## Step 7: Bind Mounts
 
-Without Volume
+A **Bind Mount** connects a folder on your computer directly to a folder inside the Container.
 
-<pre><code><strong>Container
-</strong>    ↓
+```
+Your Computer
+│
+└── /home/user/project
+        │
+        ▼
+Container
+│
+└── /app
+```
+
+Both locations point to the same files.
+
+If you edit a file on your computer,
+
+the Container immediately sees the changes.
+
+***
+
+## Step 8: Persistent Data
+
+Persistent Data is data that remains available even after a Container is removed.
+
+Examples:
+
+* Database records
+* User uploads
+* Configuration files
+* Application logs
+
+Without Persistent Storage:
+
+```
+Container
+
+↓
+
 Delete Container
-    ↓
+
+↓
+
 Data Lost ❌
-</code></pre>
+```
 
-With Volume
+With Persistent Storage:
 
 ```
 Container
-   ↓
-Volume
-   ↓
+      │
+      ▼
+Volume / Bind Mount
+
+↓
+
 Delete Container
-   ↓
-Volume Still Exists 
-```
 
-Your data remains safe.
+↓
 
-***
-
-## Step 8: Real-World Example
-
-Suppose you run a MySQL Container.
-
-Without Volumes:
-
-```
-Database
-  ↓
-Delete Container
-  ↓
-Entire Database Lost ❌
-```
-
-With Volumes:
-
-```
-Database
-  ↓
-Volume
-  ↓
-Delete Container
-  ↓
-Database Still Safe 
-```
-
-## Internal Working
-
-```
-  Image
-   ↓
-Container
-   ↓
-Creates Writable Layer
-   ↓
-Stores Temporary Data
-   ↓
-───────────────
-OR
-───────────────
-Stores Data in Volume
-   ↓
-Permanent Storage
+Data Still Exists ✅
 ```
 
 ***
 
-## Important Commands
+## Step 9: Volume vs Bind Mount
 
-Create a Volume
+| Volume                       | Bind Mount                       |
+| ---------------------------- | -------------------------------- |
+| Managed by Podman            | Managed by You                   |
+| Stored inside Podman Storage | Stored anywhere on your computer |
+| Best for Production          | Best for Development             |
+| More Portable                | Easier to edit files             |
+| Better Security              | Direct access to host files      |
+
+***
+
+## Step 10: When Should We Use Them?
+
+#### Use Volumes when:
+
+* Running Databases
+* Production Applications
+* Storing User Data
+* Keeping Data Safe
+
+Examples:
+
+* MySQL
+* PostgreSQL
+* MongoDB
+
+***
+
+#### Use Bind Mounts when:
+
+* Developing Applications
+* Editing Source Code
+* Testing Changes Quickly
+
+Example:
+
+```
+VS Code
+
+↓
+
+Save File
+
+↓
+
+Container Instantly Uses Updated File
+```
+
+No need to rebuild the Image every time.
+
+***
+
+## Common Commands
+
+#### Create a Volume
 
 ```bash
 podman volume create mydata
 ```
 
-View Volumes
+***
+
+#### View Volumes
 
 ```bash
 podman volume ls
 ```
 
-Remove a Volume
+***
+
+#### Remove a Volume
 
 ```bash
 podman volume rm mydata
+```
+
+***
+
+#### Run a Container using a Bind Mount
+
+```bash
+podman run -v /home/user/project:/app notes-app
+```
+
+This connects:
+
+```
+/home/user/project
+
+↓
+
+/app (inside Container)
+```
+
+***
+
+## Internal Working
+
+```
+             Image
+               │
+               ▼
+         Create Container
+               │
+               ▼
+       Writable Layer Created
+               │
+      ┌────────┴────────┐
+      ▼                 ▼
+Temporary Data     Persistent Data
+      │                 │
+      ▼                 ▼
+Deleted          Volume / Bind Mount
+with Container    (Data Remains)
 ```
 
 ***
@@ -285,17 +382,27 @@ podman volume rm mydata
 
 ### Writable Layer
 
-Temporary storage created when a Container starts.
+A temporary storage layer created when a Container starts.
 
-Deleted when the Container is removed.
+It is deleted when the Container is removed.
 
 ***
 
 ### Volume
 
-Permanent storage managed by Podman.
+A Podman-managed storage location used for permanent data.
 
-Data remains even after the Container is deleted.
+***
+
+### Bind Mount
+
+A connection between a folder on the host machine and a folder inside a Container.
+
+***
+
+### Persistent Data
+
+Data that remains available even after a Container is removed.
 
 ***
 
@@ -303,10 +410,13 @@ Data remains even after the Container is deleted.
 
 * Images are Read-only.
 * Containers receive a Writable Layer.
-* All temporary data is stored inside the Writable Layer.
+* Writable Layer stores temporary data.
 * Removing a Container deletes the Writable Layer.
 * Volumes provide permanent storage.
-* Volumes are essential for databases and user data.
+* Bind Mounts connect host folders to Containers.
+* Persistent Data survives Container removal.
+* Volumes are preferred for production.
+* Bind Mounts are useful during development.
 
 ***
 
@@ -318,9 +428,9 @@ Data remains even after the Container is deleted.
 
 ✅ Volume → Permanent Storage
 
-✅ Container Removal → Deletes Writable Layer
+✅ Bind Mount → Host Folder ↔ Container Folder
 
-✅ Volume → Keeps Data Safe
+✅ Persistent Data → Survives Container Removal
 
 ***
 
@@ -328,24 +438,34 @@ Data remains even after the Container is deleted.
 
 #### 1. What is a Writable Layer?
 
-A Writable Layer is a temporary storage layer added to a Container where all changes are stored.
+A Writable Layer is a temporary storage layer created when a Container starts. It stores all changes made during the Container's lifetime.
 
 ***
 
 #### 2. What happens to the Writable Layer when a Container is removed?
 
-It is deleted along with all data stored inside it.
+It is deleted along with all the data stored inside it.
 
 ***
 
-#### 3. Why do we need Volumes?
+#### 3. What is a Volume?
 
-Volumes provide permanent storage that remains even after a Container is removed.
+A Volume is a Podman-managed storage location that keeps data even after the Container is removed.
 
 ***
 
-#### 4. Are Images modified when a Container writes data?
+#### 4. What is a Bind Mount?
 
-No.
+A Bind Mount connects a directory on the host machine to a directory inside a Container.
 
-Only the Container's Writable Layer is modified.
+***
+
+#### 5. What is the difference between a Volume and a Bind Mount?
+
+Volumes are managed by Podman and are best for production. Bind Mounts directly use host directories and are ideal for development.
+
+***
+
+#### 6. Why do we need Persistent Storage?
+
+Persistent Storage ensures that important data such as databases, user uploads, and logs remain available even after a Container is deleted.
