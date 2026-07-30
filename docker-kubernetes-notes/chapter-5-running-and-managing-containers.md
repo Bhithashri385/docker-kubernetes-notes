@@ -383,7 +383,7 @@ This ID is used in most Podman commands.
 
 ***
 
-## 📝 Key Takeaways
+## &#x20;Key Takeaways
 
 * An Image is only a blueprint.
 * Running an Image creates a Container.
