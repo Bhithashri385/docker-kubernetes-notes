@@ -67,12 +67,6 @@ This Image contains:
 * Dependencies
 * Startup Command
 
-However,
-
-✅ It is stored.
-
-❌ It is NOT running.
-
 ***
 
 ## Step 2: Running the Image
@@ -402,7 +396,7 @@ This ID is used in most Podman commands.
 
 ***
 
-## ⚡ Quick Revision
+## Quick Revision
 
 ✅ `podman run` → Create & Start a Container
 
