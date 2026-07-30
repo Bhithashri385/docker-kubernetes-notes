@@ -7,3 +7,4 @@
 * [Chapter 2: Container Lifecycle](docker-kubernetes-notes/chapter-2-container-lifecycle.md)
 * [Chapter 3: Podman & Containerfile](docker-kubernetes-notes/chapter-3-podman-and-containerfile.md)
 * [Chapter 4: Building Your First Container Image](docker-kubernetes-notes/chapter-4-building-your-first-container-image.md)
+* [Chapter 5: Running & Managing Containers](docker-kubernetes-notes/chapter-5-running-and-managing-containers.md)

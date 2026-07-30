@@ -126,20 +126,6 @@ Podman communicates directly with the Linux kernel to create and manage containe
 
 ***
 
-Create a simple diagram later showing:
-
-```
-User
-   │
-Podman
-   │
-Linux Kernel
-   │
-Containers
-```
-
-***
-
 ## What is a Daemon?
 
 A **Daemon** is a background process that continuously runs and waits for requests.
