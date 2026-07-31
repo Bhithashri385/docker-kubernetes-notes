@@ -10,3 +10,4 @@
 * [Chapter 5: Running & Managing Containers](docker-kubernetes-notes/chapter-5-running-and-managing-containers.md)
 * [Chapter 6: Container Storage & Volumes](docker-kubernetes-notes/chapter-6-container-storage-and-volumes.md)
 * [Chapter 7: Pods](docker-kubernetes-notes/chapter-7-pods.md)
+* [Chapter 8: Kubernetes Cluster Architecture](docker-kubernetes-notes/chapter-8-kubernetes-cluster-architecture.md)
