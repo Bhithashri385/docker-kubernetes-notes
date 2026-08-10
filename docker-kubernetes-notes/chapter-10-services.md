@@ -21,23 +21,20 @@ In the previous chapter, we learned that a Deployment creates Pods.
 
 Example:
 
-```
-Deployment
+<pre><code>Deployment
       │
       ▼
 ReplicaSet
       │
       ▼
-Pods
-```
+<strong>    Pods
+</strong></code></pre>
 
 Suppose you have three Pods.
 
 ```
 Pod 1
-
 Pod 2
-
 Pod 3
 ```
 
@@ -77,9 +74,7 @@ The answer is:
 
 A **Service** provides a permanent network address for a group of Pods.
 
-Instead of connecting to individual Pods,
-
-users connect to the Service.
+Instead of connecting to individual Pods, users connect to the Service.
 
 ```
 User
