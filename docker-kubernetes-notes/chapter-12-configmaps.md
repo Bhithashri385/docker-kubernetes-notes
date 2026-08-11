@@ -17,6 +17,10 @@ Understand how Kubernetes keeps **application configuration separate from the Co
 
 ## Overview
 
+<figure><img src="../.gitbook/assets/image (9).png" alt=""><figcaption></figcaption></figure>
+
+
+
 ***
 
 ## Step 1: What is Configuration?
