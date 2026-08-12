@@ -16,3 +16,4 @@
 * [Chapter 11: Kubernetes Networking](docker-kubernetes-notes/chapter-11-kubernetes-networking.md)
 * [Chapter 12: ConfigMaps](docker-kubernetes-notes/chapter-12-configmaps.md)
 * [Chapter 13: Kubernetes Secrets](docker-kubernetes-notes/chapter-13-kubernetes-secrets.md)
+* [Chapter 14: OpenShift Basics](docker-kubernetes-notes/chapter-14-openshift-basics.md)
