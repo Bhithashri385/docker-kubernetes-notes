@@ -13,6 +13,10 @@ Understand what **OpenShift** is, how it is related to Kubernetes, and how an ap
 * `oc` CLI
 * OpenShift application deployment flow
 
+## Overview
+
+<figure><img src="../.gitbook/assets/image (11).png" alt=""><figcaption></figcaption></figure>
+
 ***
 
 ## Step 1: What is OpenShift?
